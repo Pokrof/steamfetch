@@ -26,9 +26,12 @@ def get_user_inventory(user_id):
     i = 0
     inventory_items = []
     while i <= item_quanity - 1:
-        inventory_item = inventory['descriptions'][i]['market_hash_name']
-        inventory_items.append(inventory_item)
-        i = i + 1
+        if inventory['descriptions'][i]['tradable'] == 1:
+            inventory_item = inventory['descriptions'][i]['market_hash_name']
+            inventory_items.append(inventory_item)
+            i = i + 1
+        else:
+            i = i + 1
 
     return inventory_items
 
@@ -38,16 +41,16 @@ def fetch_price(inventory_items):
         i = 0
         amounth = 0.00
         while i <= item_quanity - 1:
+            timestart = time.time()
             item = inventory_items[i]
-            response = requests.get(SteamUrl.COMMUNITY_URL + 'market/priceoverview/?currency=1&appid=730&market_hash_name='
-                            + item).json()
+            response = requests.get(SteamUrl.COMMUNITY_URL + 'market/priceoverview/?currency=1&appid=730' +
+                                    '&market_hash_name=' + item).json()
             price = re.sub("[^0-9.]", "", response['lowest_price'])
 
             price_float = float(price)
             amounth = amounth + price_float
             i = i + 1
-            time.sleep(3)
 
-        return "%.2f" % amounth
+            time.sleep(3 - (time.time() - timestart))
 
-print(get_user_inventory(userId))
+        return "%.2f" %  amounth
