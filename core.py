@@ -52,7 +52,7 @@ def fetch_price(inventory_items):
         price_float = float(price)
         amounth = amounth + price_float
         i = i + 1
-        if time.time()-timestart <= 3:
+        if time.time()-timestart < 3:
             time.sleep(3 - (time.time() - timestart))
 
     return "%.2f" % amounth
