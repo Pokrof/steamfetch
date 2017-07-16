@@ -1,13 +1,9 @@
 # __author__ = 'Yudin'
 
-import json
+
 import requests
 import time
 import re
-
-# Временные данные
-userId = '76561198122735294'
-apikey = '1D491D713C988BDD4BB45512E1E929A6'
 
 
 class GameOptions:
@@ -62,12 +58,12 @@ def fetch_price(inventory_items):
     return "%.2f" % amounth
 
 
-
 def get_friends_list(user_id: str, api_key: str):
     response = requests.get('http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=' + api_key + '&steamid='
-                                + user_id + '&relationship=friend').json()
+                            + user_id + '&relationship=friend').json()
 
     return response
+
 
 def get_friends_id_list(user_id: str, api_key: str):
     friendlist = get_friends_list(user_id, api_key)
@@ -78,5 +74,4 @@ def get_friends_id_list(user_id: str, api_key: str):
     while i <= flen - 1:
         friendidlist.append(friendlist['friendslist']['friends'][i]['steamid'])
         i = i + 1
-    return  friendidlist
-
+    return friendidlist
