@@ -41,16 +41,26 @@ def get_user_inventory(user_id):
 
     return inventory_items
 
-def get_users_inventory(users_id: list):
-    user_quanity = len(users_id)
-    res = {}
+
+def fetch_price(inventory_items):
+    item_quanity = len(inventory_items)
     i = 0
-    while i <= user_quanity - 1:
-        inventory_value = fetch_price(get_user_inventory(users_id[i]))
-        res = {users_id[i], inventory_value}
+    amounth = 0.00
+    while i <= item_quanity - 1:
+        timestart = time.time()
+        item = inventory_items[i]
+        response = requests.get(SteamUrl.COMMUNITY_URL + 'market/priceoverview/?currency=1&appid=730' +
+                                '&market_hash_name=' + item).json()
+        price = re.sub("[^0-9.]", "", response['lowest_price'])
 
+        price_float = float(price)
+        amounth = amounth + price_float
+        i = i + 1
+        if time.time()-timestart <= 3:
+            time.sleep(3 - (time.time() - timestart))
 
-    return res
+    return "%.2f" % amounth
+
 
 
 def get_friends_list(user_id: str, api_key: str):
@@ -70,5 +80,3 @@ def get_friends_id_list(user_id: str, api_key: str):
         i = i + 1
     return  friendidlist
 
-
-print(get_users_inventory(get_friends_id_list(userId, apikey)))
